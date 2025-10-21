@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using GuilhermeGabriel.Requests;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>();
@@ -20,6 +21,14 @@ app.MapPost("/api/consumo/cadastrar", async (AppDbContext context, [FromBody] Ca
     if (request.M3Consumidos < 1)
     {
         return Results.BadRequest("Insira um valor maior que 0 em Metros cubicos");
+    }
+
+    var consumoExistente = await context.Consumos
+        .Where(c => c.Cpf == request.Cpf && c.Mes == request.Mes && c.Ano == request.Ano)
+        .FirstOrDefaultAsync(); 
+    if (consumoExistente != null)
+    {
+        return Results.BadRequest("Já existe um consumo registrado para este CPF, mês e ano.");
     }
 
     double tarifa = 0;
@@ -96,10 +105,9 @@ app.MapGet("/api/consumo/listar", (AppDbContext context) =>
 
 app.MapGet("/api/consumo/buscar/{cpf}/{mes}/{ano}", async (string cpf, int mes, int ano, AppDbContext context) =>
 {
-    var consumo = context.Consumos
-        .Where(c => c.Cpf == cpf)
-        .Where(c => c.Mes == mes)
-        .Where(c => c.Ano == ano);
+     var consumo = await context.Consumos
+        .Where(c => c.Cpf == cpf && c.Mes == mes && c.Ano == ano)
+        .FirstOrDefaultAsync();
 
     if (consumo == null)
     {
@@ -111,20 +119,32 @@ app.MapGet("/api/consumo/buscar/{cpf}/{mes}/{ano}", async (string cpf, int mes, 
 
 app.MapDelete("/api/consumo/remover/{cpf}/{mes}/{ano}", async (string cpf, int mes, int ano, AppDbContext context) =>
 {
-    var consumo = context.Consumos
-        .Where(c => c.Cpf == cpf)
-        .Where(c => c.Mes == mes)
-        .Where(c => c.Ano == ano);
+   var consumo = await context.Consumos
+        .Where(c => c.Cpf == cpf && c.Mes == mes && c.Ano == ano)
+        .FirstOrDefaultAsync();
 
     if (consumo == null)
     {
         return Results.NotFound();
     }
 
-    context.Remove(consumo);
-    await context.SaveChangesAsync();   
-
-    return Results.Ok(consumo);
+    context.Consumos.Remove(consumo);
+    await context.SaveChangesAsync();
+    return Results.Ok();
 });
+
+app.MapGet("/api/consumo/total-geral", async (AppDbContext context) =>
+{
+    var totalGeral = await context.Consumos
+        .SumAsync(c => c.TotalGeral); 
+
+    if (totalGeral == 0)
+    {
+        return Results.NotFound("Nenhum consumo registrado.");
+    }
+
+    return Results.Ok(new { totalGeral });
+});
+
 
 app.Run();
