@@ -21,7 +21,11 @@ namespace GuilhermeGabriel.Migrations
                     Ano = table.Column<int>(type: "INTEGER", nullable: false),
                     M3Consumidos = table.Column<double>(type: "REAL", nullable: false),
                     Bandeira = table.Column<string>(type: "TEXT", nullable: false),
-                    possuiEsgoto = table.Column<bool>(type: "INTEGER", nullable: false)
+                    PossuiEsgoto = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Tarifa = table.Column<double>(type: "REAL", nullable: false),
+                    AdicionalBandeira = table.Column<double>(type: "REAL", nullable: false),
+                    TaxaDeEsgoto = table.Column<double>(type: "REAL", nullable: false),
+                    TotalGeral = table.Column<double>(type: "REAL", nullable: false)
                 },
                 constraints: table =>
                 {

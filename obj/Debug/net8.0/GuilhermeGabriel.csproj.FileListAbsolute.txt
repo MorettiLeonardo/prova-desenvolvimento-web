@@ -151,3 +151,4 @@ C:\prova\LeonardoMoretti\LeonardoMoretti\obj\Debug\net8.0\refint\GuilhermeGabrie
 C:\prova\LeonardoMoretti\LeonardoMoretti\obj\Debug\net8.0\GuilhermeGabriel.pdb
 C:\prova\LeonardoMoretti\LeonardoMoretti\obj\Debug\net8.0\GuilhermeGabriel.genruntimeconfig.cache
 C:\prova\LeonardoMoretti\LeonardoMoretti\obj\Debug\net8.0\ref\GuilhermeGabriel.dll
+C:\prova\LeonardoMoretti\LeonardoMoretti\obj\Debug\net8.0\GuilhermeGabriel.sourcelink.json

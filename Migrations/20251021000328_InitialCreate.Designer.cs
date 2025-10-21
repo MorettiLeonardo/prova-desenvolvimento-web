@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GuilhermeGabriel.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251020222102_InitialCreate")]
+    [Migration("20251021000328_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -23,6 +23,9 @@ namespace GuilhermeGabriel.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
+
+                    b.Property<double>("AdicionalBandeira")
+                        .HasColumnType("REAL");
 
                     b.Property<int>("Ano")
                         .HasColumnType("INTEGER");
@@ -41,8 +44,17 @@ namespace GuilhermeGabriel.Migrations
                     b.Property<int>("Mes")
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("possuiEsgoto")
+                    b.Property<bool>("PossuiEsgoto")
                         .HasColumnType("INTEGER");
+
+                    b.Property<double>("Tarifa")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("TaxaDeEsgoto")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("TotalGeral")
+                        .HasColumnType("REAL");
 
                     b.HasKey("Id");
 
