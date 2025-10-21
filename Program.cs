@@ -26,43 +26,52 @@ app.MapPost("/api/consumo/cadastrar", async (AppDbContext context, [FromBody] Ca
     var consumoExistente = await context.Consumos
         .Where(c => c.Cpf == request.Cpf && c.Mes == request.Mes && c.Ano == request.Ano)
         .FirstOrDefaultAsync(); 
+
     if (consumoExistente != null)
     {
         return Results.BadRequest("Já existe um consumo registrado para este CPF, mês e ano.");
     }
 
-    double tarifa = 0;
-    if (request.M3Consumidos < 11)
+    double consumoFaturado = 0.0;
+
+    if (request.M3Consumidos < 10)
     {
-        tarifa = 2.50 * request.M3Consumidos;
-    }
-    else if (request.M3Consumidos < 21)
-    {
-        tarifa = 3.50 * request.M3Consumidos;
-    }
-    else if (request.M3Consumidos < 51)
-    {
-        tarifa = 5 * request.M3Consumidos;
+        consumoFaturado = 10;
     }
     else
     {
-        tarifa = 6.50 * request.M3Consumidos;
+        consumoFaturado = request.M3Consumidos;
     }
 
-    double consumoFaturado = request.M3Consumidos < 10 ? 10 : request.M3Consumidos;
+    double tarifa = 0.0;
+    if (request.M3Consumidos < 11)
+    {
+        tarifa =  request.M3Consumidos /2.50;
+    }
+    else if (request.M3Consumidos < 21)
+    {
+        tarifa =  request.M3Consumidos / 3.50 ;
+    }
+    else if (request.M3Consumidos < 51)
+    {
+        tarifa = request.M3Consumidos / 5 ;
+    } else
+    {
+        tarifa =  request.M3Consumidos / 6.50 ;
+    }
 
-    double adicionalBandeira = 0;
+    double adicionalBandeira = 0.0;
     if (request.Bandeira == "Amarela")
     {
-        adicionalBandeira = consumoFaturado + (consumoFaturado * 0.1);
+        adicionalBandeira = consumoFaturado * 0.1;
     }
     else if (request.Bandeira == "Vermelha")
     {
-        adicionalBandeira = consumoFaturado + (consumoFaturado * 0.2);
+        adicionalBandeira = consumoFaturado * 0.2;
     }
 
     double taxaDeEsgoto = 0;
-    double valorAgua = consumoFaturado * tarifa;
+    double valorAgua = request.M3Consumidos * tarifa;
     if (request.possuiEsgoto)
     {
         taxaDeEsgoto = (valorAgua + adicionalBandeira) * 0.80;
@@ -81,7 +90,9 @@ app.MapPost("/api/consumo/cadastrar", async (AppDbContext context, [FromBody] Ca
         Tarifa = tarifa,
         AdicionalBandeira = adicionalBandeira,
         TaxaDeEsgoto = taxaDeEsgoto,
-        TotalGeral = totalGeral
+        ValorAgua = valorAgua,
+        TotalGeral = totalGeral,
+        ConsumoFaturado = consumoFaturado
     };
 
     context.Add(consumo);
@@ -145,6 +156,5 @@ app.MapGet("/api/consumo/total-geral", async (AppDbContext context) =>
 
     return Results.Ok(new { totalGeral });
 });
-
 
 app.Run();

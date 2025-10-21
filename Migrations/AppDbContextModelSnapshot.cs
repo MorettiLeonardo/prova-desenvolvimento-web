@@ -31,6 +31,9 @@ namespace GuilhermeGabriel.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<double>("ConsumoFaturado")
+                        .HasColumnType("REAL");
+
                     b.Property<string>("Cpf")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -51,6 +54,9 @@ namespace GuilhermeGabriel.Migrations
                         .HasColumnType("REAL");
 
                     b.Property<double>("TotalGeral")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("ValorAgua")
                         .HasColumnType("REAL");
 
                     b.HasKey("Id");
